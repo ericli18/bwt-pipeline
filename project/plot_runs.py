@@ -3,6 +3,7 @@
 import csv
 import math
 from pathlib import Path
+from statistics import fmean
 
 import matplotlib
 
@@ -41,6 +42,10 @@ def main() -> None:
     except (OSError, ValueError, csv.Error) as error:
         raise SystemExit(f"Could not read runs: {error}") from error
 
+    print(f"Average distance: {fmean(distances):.4f}")
+    print(f"Average length: {fmean(lengths):.4f}")
+    print(f"Average sqrt(length): {fmean(math.sqrt(n) for n in lengths):.4f}")
+
     minimum, maximum = min(lengths), max(lengths)
     reference_n = [minimum + (maximum - minimum) * i / 500 for i in range(501)]
     roots = [math.sqrt(n) for n in reference_n]
@@ -49,10 +54,6 @@ def main() -> None:
     ax.scatter(lengths, distances, s=8, alpha=0.15, label="Runs")
     marker = "o" if minimum == maximum else None
     ax.plot(reference_n, roots, label="√n", color="tab:orange", marker=marker)
-    ax.plot(
-        reference_n, [100 * root for root in roots],
-        label="100√n", color="tab:green", marker=marker,
-    )
     ax.set_xlabel("Number of characters (n)")
     ax.set_ylabel("Distance")
     ax.set_title("Distance by word length")
