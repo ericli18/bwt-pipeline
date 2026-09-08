@@ -31,3 +31,12 @@ class DictionaryLoader(BaseLoader):
                 ) from exc
 
         yield from entries
+
+class CalgaryLoader(BaseLoader):
+    # Corpus has been obtained from here
+    # https://www.data-compression.info/Corpora/CalgaryCorpus/index.html#CalgaryCorpus
+
+        
+
+    def __iter__(self) -> Iterator[str]:
+        yield "hello"
