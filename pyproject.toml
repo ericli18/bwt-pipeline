@@ -8,5 +8,7 @@ dependencies = [
     "hypothesis>=6.167.1",
     "matplotlib>=3.11.1",
     "nltk>=3.10.3",
+    "pydivsufsort>=0.0.20",
     "pytest>=9.1.1",
+    "rapidfuzz>=3.14.6",
 ]

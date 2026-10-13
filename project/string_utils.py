@@ -1,15 +1,20 @@
-def levenshtein_distance(a: str, b: str) -> int:
-    if len(a) > len(b):
-        a, b = b, a
+"""String-distance helpers."""
 
-    distances = range(len(a) + 1)
-    for i2, c2 in enumerate(b):
-        distances_ = [i2+1]
-        for i1, c1 in enumerate(a):
-            if c1 == c2:
-                distances_.append(distances[i1])
-            else:
-                distances_.append(1 + min((distances[i1], distances[i1 + 1], distances_[-1])))
-        distances = distances_
-    return distances[-1]
+from collections.abc import Hashable, Sequence
 
+from rapidfuzz.distance import Levenshtein
+
+INITIAL_CUTOFF = 64
+
+
+def levenshtein_distance(a: Sequence[Hashable], b: Sequence[Hashable]) -> int:
+    """Return the exact unit-cost Levenshtein distance between two sequences.
+
+    A cutoff lets rapidfuzz search only a band around the diagonal, which is far
+    faster when the distance is small relative to the lengths. Above the cutoff
+    rapidfuzz returns ``cutoff + 1``, so doubling until the result fits is exact.
+    """
+    cutoff = max(INITIAL_CUTOFF, abs(len(a) - len(b)))
+    while (distance := Levenshtein.distance(a, b, score_cutoff=cutoff)) > cutoff:
+        cutoff *= 2
+    return distance
